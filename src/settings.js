@@ -1,43 +1,18 @@
 /*
  * @Author: shiliangL
  * @Date: 2020-05-27 09:43:51
- * @LastEditTime: 2020-05-27 09:50:24
+ * @LastEditTime: 2020-05-27 11:01:18
  * @LastEditors: Do not edit
  * @Description:
  * @FilePath: /topevery-ui-admin/src/settings.js
  */
+
 module.exports = {
   title: 'Topevery-Ui Admin',
-
-  /**
-   * @type {boolean} true | false
-   * @description Whether show the settings right-panel
-   */
   showSettings: true,
-
-  /**
-   * @type {boolean} true | false
-   * @description Whether need tagsView
-   */
+  avatarUrl: 'https://user-gold-cdn.xitu.io/2017/11/12/28d5b3e40b283b37045283324ecde57d?imageView2/1/w/180/h/180/q/85/format/webp/interlace/1',
   tagsView: true,
-
-  /**
-   * @type {boolean} true | false
-   * @description Whether fix the header
-   */
   fixedHeader: true,
-
-  /**
-   * @type {boolean} true | false
-   * @description Whether show the logo in sidebar
-   */
-  sidebarLogo: false,
-
-  /**
-   * @type {string | array} 'production' | ['production', 'development']
-   * @description Need show err logs component.
-   * The default is only used in the production env
-   * If you want to also use it in dev, you can pass ['production', 'development']
-   */
+  sidebarLogo: true,
   errorLog: 'production'
 }

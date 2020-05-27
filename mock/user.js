@@ -1,3 +1,11 @@
+/*
+ * @Author: shiliangL
+ * @Date: 2020-05-27 09:43:51
+ * @LastEditTime: 2020-05-27 11:02:35
+ * @LastEditors: Do not edit
+ * @Description:
+ * @FilePath: /topevery-ui-admin/mock/user.js
+ */
 
 const tokens = {
   admin: {
@@ -12,13 +20,13 @@ const users = {
   'admin-token': {
     roles: ['admin'],
     introduction: 'I am a super administrator',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+    avatar: 'https://user-gold-cdn.xitu.io/2017/11/12/28d5b3e40b283b37045283324ecde57d?imageView2/1/w/180/h/180/q/85/format/webp/interlace/1',
     name: 'Super Admin'
   },
   'editor-token': {
     roles: ['editor'],
     introduction: 'I am an editor',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+    avatar: 'https://user-gold-cdn.xitu.io/2017/11/12/28d5b3e40b283b37045283324ecde57d?imageView2/1/w/180/h/180/q/85/format/webp/interlace/1',
     name: 'Normal Editor'
   }
 }

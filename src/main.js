@@ -1,7 +1,7 @@
 /*
  * @Author: shiliangL
  * @Date: 2020-05-27 09:43:51
- * @LastEditTime: 2020-05-27 10:03:49
+ * @LastEditTime: 2020-05-27 10:57:37
  * @LastEditors: Do not edit
  * @Description:
  * @FilePath: /topevery-ui-admin/src/main.js
@@ -12,7 +12,7 @@ import '@/styles/index.scss' // global css
 
 import Vue from 'vue'
 import Cookies from 'js-cookie'
-import Element from 'element-ui'
+import Element from 'topevery-element-ui'
 
 import App from './App'
 import store from './store'

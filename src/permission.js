@@ -1,6 +1,14 @@
+/*
+ * @Author: shiliangL
+ * @Date: 2020-05-27 09:43:51
+ * @LastEditTime: 2020-05-27 10:58:01
+ * @LastEditors: Do not edit
+ * @Description:
+ * @FilePath: /topevery-ui-admin/src/permission.js
+ */
 import router from './router'
 import store from './store'
-import { Message } from 'element-ui'
+import { Message } from 'topevery-element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie

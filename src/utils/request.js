@@ -1,5 +1,13 @@
+/*
+ * @Author: shiliangL
+ * @Date: 2020-05-27 09:43:51
+ * @LastEditTime: 2020-05-27 10:58:22
+ * @LastEditors: Do not edit
+ * @Description:
+ * @FilePath: /topevery-ui-admin/src/utils/request.js
+ */
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { MessageBox, Message } from 'topevery-element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 

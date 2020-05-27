@@ -1,6 +1,12 @@
 <template>
-  <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll">
+  <div
+    id="tags-view-container"
+    class="tags-view-container"
+  >
+    <scroll-pane
+      ref="scrollPane"
+      class="tags-view-wrapper"
+    >
       <router-link
         v-for="tag in visitedViews"
         ref="tag"
@@ -13,12 +19,23 @@
         @contextmenu.prevent.native="openMenu(tag,$event)"
       >
         {{ tag.title }}
-        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+        <span
+          v-if="!isAffix(tag)"
+          class="el-icon-close"
+          @click.prevent.stop="closeSelectedTag(tag)"
+        />
       </router-link>
     </scroll-pane>
-    <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
+    <ul
+      v-show="visible"
+      :style="{left:left+'px',top:top+'px'}"
+      class="contextmenu"
+    >
       <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
-      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">Close</li>
+      <li
+        v-if="!isAffix(selectedTag)"
+        @click="closeSelectedTag(selectedTag)"
+      >Close</li>
       <li @click="closeOthersTags">Close Others</li>
       <li @click="closeAllTags(selectedTag)">Close All</li>
     </ul>
@@ -28,6 +45,7 @@
 <script>
 import ScrollPane from './ScrollPane'
 import path from 'path'
+import vueScrollTo from 'vue-scrollto'
 
 export default {
   components: { ScrollPane },
@@ -52,6 +70,7 @@ export default {
     $route() {
       this.addTags()
       this.moveToCurrentTag()
+      this.scrollToActiveMenu()
     },
     visible(value) {
       if (value) {
@@ -64,6 +83,7 @@ export default {
   mounted() {
     this.initTags()
     this.addTags()
+    console.log(this)
   },
   methods: {
     isActive(route) {
@@ -71,6 +91,22 @@ export default {
     },
     isAffix(tag) {
       return tag.meta && tag.meta.affix
+    },
+    scrollToActiveMenu() {
+      setTimeout(_ => {
+        const scrollContainer = document.querySelector('.scrollbar-wrapper')
+        const els = document.querySelectorAll('.scrollbar-wrapper .is-active')
+        const el = els[els.length - 1]
+        const options = {
+          container: scrollContainer,
+          easing: 'ease-in',
+          force: true,
+          cancelable: true,
+          x: false,
+          y: true
+        }
+        vueScrollTo.scrollTo(el, 520, options)
+      }, 0)
     },
     filterAffixTags(routes, basePath = '/') {
       let tags = []
@@ -189,35 +225,37 @@ export default {
     },
     closeMenu() {
       this.visible = false
-    },
-    handleScroll() {
-      this.closeMenu()
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "~@/styles/variables.scss";
+
 .tags-view-container {
-  height: 34px;
+  user-select: none;
+  height: 38px;
   width: 100%;
-  background: #fff;
-  border-bottom: 1px solid #d8dce5;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+  box-sizing: border-box;
+  background: #f0f0f0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
   .tags-view-wrapper {
     .tags-view-item {
       display: inline-block;
       position: relative;
       cursor: pointer;
-      height: 26px;
-      line-height: 26px;
-      border: 1px solid #d8dce5;
+      height: 32px;
+      line-height: 32px;
+      border: 1px solid #e8eaec;
       color: #495060;
       background: #fff;
       padding: 0 8px;
       font-size: 12px;
       margin-left: 5px;
-      margin-top: 4px;
+      margin-top: 2px;
       &:first-of-type {
         margin-left: 15px;
       }
@@ -225,11 +263,11 @@ export default {
         margin-right: 15px;
       }
       &.active {
-        background-color: #42b983;
-        color: #fff;
-        border-color: #42b983;
+        background-color: $base-menu-active-background;
+        color: $base-menu-text-active;
+        border-color: $base-menu-active-background;
         &::before {
-          content: '';
+          content: "";
           background: #fff;
           display: inline-block;
           width: 8px;
@@ -252,7 +290,7 @@ export default {
     font-size: 12px;
     font-weight: 400;
     color: #333;
-    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
     li {
       margin: 0;
       padding: 7px 16px;
@@ -262,28 +300,31 @@ export default {
       }
     }
   }
-}
-</style>
 
-<style lang="scss">
+  .el-icon-close {
+    top: 4px;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    display: inline-block;
+  }
+}
+
 //reset element css of el-icon-close
 .tags-view-wrapper {
   .tags-view-item {
     .el-icon-close {
-      width: 16px;
-      height: 16px;
-      vertical-align: 2px;
       border-radius: 50%;
       text-align: center;
-      transition: all .3s cubic-bezier(.645, .045, .355, 1);
+      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
       transform-origin: 100% 50%;
       &:before {
-        transform: scale(.6);
+        transform: scale(0.6);
         display: inline-block;
-        vertical-align: -3px;
       }
       &:hover {
-        background-color: #b4bccc;
+        transform: scale(1);
         color: #fff;
       }
     }
