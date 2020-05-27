@@ -8,6 +8,7 @@
   }
 
   .sidebar-container {
+    user-select: none;
     transition: width 0.28s;
     width: $sideBarWidth !important;
     background-color: $menuBg;
@@ -79,10 +80,19 @@
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
-
       &:hover {
         background-color: $subMenuHover !important;
       }
+
+      &.is-active{
+        color:$base-menu-text-active !important;
+        background-color: $base-menu-active-background !important;
+      }
+    }
+
+    & .is-active{
+      color: $base-menu-text-active !important;
+      background-color: $base-menu-active-background !important;
     }
   }
 
