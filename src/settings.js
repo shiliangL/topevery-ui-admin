@@ -1,7 +1,7 @@
 /*
  * @Author: shiliangL
  * @Date: 2020-05-27 09:43:51
- * @LastEditTime: 2020-05-27 11:01:18
+ * @LastEditTime: 2020-05-27 18:09:37
  * @LastEditors: Do not edit
  * @Description:
  * @FilePath: /topevery-ui-admin/src/settings.js
@@ -10,7 +10,7 @@
 module.exports = {
   title: 'Topevery-Ui Admin',
   showSettings: true,
-  avatarUrl: 'https://user-gold-cdn.xitu.io/2017/11/12/28d5b3e40b283b37045283324ecde57d?imageView2/1/w/180/h/180/q/85/format/webp/interlace/1',
+  avatarUrl: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
   tagsView: true,
   fixedHeader: true,
   sidebarLogo: true,
