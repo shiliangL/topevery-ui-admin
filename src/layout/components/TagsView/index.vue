@@ -45,7 +45,6 @@
 <script>
 import ScrollPane from './ScrollPane'
 import path from 'path'
-import vueScrollTo from 'vue-scrollto'
 
 export default {
   components: { ScrollPane },
@@ -105,7 +104,8 @@ export default {
           x: false,
           y: true
         }
-        vueScrollTo.scrollTo(el, 520, options)
+        // vueScrollTo.scrollTo(el, 520, options)
+        this.$cuebscrollto(el, 520, options)
       }, 0)
     },
     filterAffixTags(routes, basePath = '/') {
