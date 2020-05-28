@@ -9,6 +9,11 @@
       </div>
 
       <div class="drawer-item">
+        <span>Menu Bg Color</span>
+        <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="menuBgChange" />
+      </div>
+
+      <div class="drawer-item">
         <span>Open Tags-View</span>
         <el-switch v-model="tagsView" class="drawer-switch" />
       </div>
@@ -74,6 +79,12 @@ export default {
     themeChange(val) {
       this.$store.dispatch('settings/changeSetting', {
         key: 'theme',
+        value: val
+      })
+    },
+    menuBgChange(val) {
+      this.$store.dispatch('settings/changeSetting', {
+        key: 'menuBg',
         value: val
       })
     }

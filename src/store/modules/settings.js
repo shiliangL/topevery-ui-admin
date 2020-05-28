@@ -1,10 +1,15 @@
-import variables from '@/styles/element-variables.scss'
+
+import variablesTheme from '@/styles/element-variables.scss'
+import variablesAdmin from '@/styles/variables.scss'
+
 import defaultSettings from '@/settings'
 
 const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
-  theme: variables.theme,
+  theme: variablesTheme.theme,
+  subMenuBg: variablesAdmin.subMenuBg,
+  menuBg: variablesAdmin.menuBg,
   showSettings: showSettings,
   tagsView: tagsView,
   fixedHeader: fixedHeader,
