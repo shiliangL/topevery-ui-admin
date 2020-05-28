@@ -1,7 +1,7 @@
 /*
  * @Author: shiliangL
  * @Date: 2020-05-27 09:43:51
- * @LastEditTime: 2020-05-27 10:57:37
+ * @LastEditTime: 2020-05-28 15:35:26
  * @LastEditors: Do not edit
  * @Description:
  * @FilePath: /topevery-ui-admin/src/main.js
@@ -36,6 +36,12 @@ if (process.env.NODE_ENV === 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
 }
+
+import BaiduMap from 'vue-baidu-map-topevery'
+// import BaiduMap from '@/vmap'
+Vue.use(BaiduMap, {
+  ak: '71ce4e39b5be9ddfb56e3169cafc3922'
+})
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'small' // set element-ui default size

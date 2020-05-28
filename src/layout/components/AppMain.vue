@@ -42,7 +42,7 @@ export default {
   }
 
   .fixed-header+.app-main {
-    padding-top: 100px;
+    padding-top: 94px;
   }
 }
 </style>

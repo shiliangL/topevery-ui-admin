@@ -10,7 +10,14 @@ module.exports = {
     es6: true,
   },
   extends: ['plugin:vue/recommended', 'eslint:recommended'],
-
+  "globals": {
+    //为百度地图设置规则
+    "BMap": true,
+    "BMAP_NORMAL_MAP": true,
+    "BMAP_HYBRID_MAP":true,
+    "BMAP_ANCHOR_TOP_LEFT":true,
+    "BMAP_ANCHOR_TOP_RIGHT":true,
+  },
   // add your custom rules here
   //it is base on https://github.com/vuejs/eslint-config-vue
   rules: {
