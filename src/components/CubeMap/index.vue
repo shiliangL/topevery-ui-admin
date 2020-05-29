@@ -7,7 +7,7 @@
     @ready="mapReady"
   >
     <!-- 省市区边界 -->
-    <bm-boundary v-if="showBoundary" :name="centerName" :stroke-weight="2" fill-color="" stroke-color="red" @loaded="boundaryLoaded" />
+    <bm-boundary v-if="showBoundary" :disable-mass-clear="true" :name="centerName" :stroke-weight="2" fill-color="" stroke-color="red" @loaded="boundaryLoaded" />
 
     <!-- 地图控件 轨迹回放-->
     <MapGpsTracePlay v-if="showMapGpsTracePlay" />
