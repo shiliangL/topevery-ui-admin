@@ -149,6 +149,7 @@ export const asyncRoutes = [
       title: 'Error Pages',
       icon: '404'
     },
+    hidden: true,
     children: [
       {
         path: '401',
@@ -168,6 +169,7 @@ export const asyncRoutes = [
   {
     path: '/error-log',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'log',
@@ -181,6 +183,7 @@ export const asyncRoutes = [
   {
     path: '/theme',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -194,10 +197,28 @@ export const asyncRoutes = [
   {
     path: 'external-link',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'https://github.com/PanJiaChen/vue-element-admin',
         meta: { title: 'External Link', icon: 'link' }
+      }
+    ]
+  },
+
+  {
+    path: '/table',
+    component: Layout,
+    meta: {
+      title: 'tableList',
+      icon: 'table'
+    },
+    children: [
+      {
+        path: 'tableList',
+        component: () => import('@/views/tableList/index'),
+        name: 'tableList',
+        meta: { title: 'tableList', noCache: true }
       }
     ]
   },

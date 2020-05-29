@@ -1,7 +1,7 @@
 <!--
  * @Author: shiliangL
  * @Date: 2020-05-27 09:43:51
- * @LastEditTime: 2020-05-28 15:37:16
+ * @LastEditTime: 2020-05-29 16:13:04
  * @LastEditors: Do not edit
  * @Description:
  * @FilePath: /topevery-ui-admin/src/views/dashboard/index.vue
@@ -27,8 +27,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import CubeMap from '@/components/CubeMap'
-import points from './json/area.json'
-import { on } from '@/utils/tools'
+// import points from './json/area.json'
+// import { on } from '@/utils/tools'
 
 export default {
   name: 'Dashboard',
@@ -46,8 +46,8 @@ export default {
             {
               'iconType': 2,
               'id': 'FC75B196-01CB-43C2-82E4-977DB8953703',
-              'lat': 22.642504411498177,
-              'lng': 113.84449905288676,
+              'lat': 22.57863,
+              'lng': 113.882209,
               'name': '粤BGL503',
               'sectionId': 'A89B561C-7E88-4770-9243-1961FAFFBDA6',
               'type': 1,
@@ -78,22 +78,45 @@ export default {
     },
     markerClick(e, t, m) {
       console.log(e, t, m)
-      this.map && this.map.removeOverlay(this.polygon)
-      const pointList = []
-      const profilePoints = points.data.profilePoints[0]
-      for (const item of profilePoints) {
-        pointList.push(new BMap.Point(item.lng, item.lat))
-      }
-      this.polygon = new BMap.Polygon(pointList, { strokeColor: 'red', strokeWeight: 2, strokeOpacity: 0.5 })
-      on(this.polygon, 'dblclick', function() {
-        console.log('xxx')
-        // this.enableEditing()
+      // this.map && this.map.removeOverlay(this.polygon)
+      // const pointList = []
+      // const profilePoints = points.data.profilePoints[0]
+      // for (const item of profilePoints) {
+      //   pointList.push(new BMap.Point(item.lng, item.lat))
+      // }
+      // this.polygon = new BMap.Polygon(pointList, { strokeColor: 'red', strokeWeight: 2, strokeOpacity: 0.5 })
+      // on(this.polygon, 'dblclick', function() {
+      //   console.log('xxx')
+      //   // this.enableEditing()
+      // })
+      // on(this.polygon, 'contextmenu', function() {
+      //   console.log('xxx')
+      //   // this.disableEditing()
+      // })
+      // this.map.addOverlay(this.polygon)
+
+      const linePoints = [
+        [
+          {
+            'lat': 22.57863,
+            'lng': 113.882209
+          },
+          {
+            'lat': 22.578242,
+            'lng': 113.882807
+          },
+          {
+            'lat': 22.578221,
+            'lng': 113.882798
+          }
+        ]
+      ]
+
+      linePoints.forEach(itemArr => {
+        const list = itemArr.map(item => new BMap.Point(item.lng, item.lat))
+        const polyline = new BMap.Polyline(list, { strokeColor: 'blue', strokeWeight: 2, strokeOpacity: 0.5 })
+        this.map.addOverlay(polyline)
       })
-      on(this.polygon, 'contextmenu', function() {
-        console.log('xxx')
-        // this.disableEditing()
-      })
-      this.map.addOverlay(this.polygon)
     }
   }
 }

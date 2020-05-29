@@ -1,3 +1,11 @@
+/*
+ * @Author: shiliangL
+ * @Date: 2020-05-27 09:43:51
+ * @LastEditTime: 2020-05-29 16:10:35
+ * @LastEditors: Do not edit
+ * @Description:
+ * @FilePath: /topevery-ui-admin/mock/index.js
+ */
 import Mock from 'mockjs'
 import { param2Obj } from '../src/utils'
 
@@ -5,12 +13,14 @@ import user from './user'
 import role from './role'
 import article from './article'
 import search from './remote-search'
+import tableList from './tableList'
 
 const mocks = [
   ...user,
   ...role,
   ...article,
-  ...search
+  ...search,
+  ...tableList
 ]
 
 // for front mock
