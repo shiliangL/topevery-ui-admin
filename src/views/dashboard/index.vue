@@ -1,15 +1,21 @@
 <!--
  * @Author: shiliangL
  * @Date: 2020-05-27 09:43:51
- * @LastEditTime: 2020-05-29 16:13:04
+ * @LastEditTime: 2020-05-30 16:56:34
  * @LastEditors: Do not edit
  * @Description:
  * @FilePath: /topevery-ui-admin/src/views/dashboard/index.vue
 -->
 <template>
-  <div class="dashboard">
+  <div class="dashboard page">
 
-    <CubeMap class="cubeMap" :marker-list="markerList" @mapReady="mapReady" @markerClick="markerClick">
+    <CubeMap
+      ref="cubeMap"
+      class="cubeMap"
+      :polygon-list="polygon"
+      @mapReady="mapReady"
+      @markerClick="markerClick"
+    >
       <template slot="bm-overlay">
         <!-- <bm-view :style="{height:'calc(100% - 40px)'}" /> -->
         <div class="text-box">
@@ -28,6 +34,10 @@
 import { mapGetters } from 'vuex'
 import CubeMap from '@/components/CubeMap'
 // import points from './json/area.json'
+import { polygonPoints } from './json/polygonPoints.json'
+
+console.log(polygonPoints)
+
 // import { on } from '@/utils/tools'
 
 export default {
@@ -39,6 +49,7 @@ export default {
     return {
       autosize: '',
       currentRole: 'adminDashboard',
+      polygon: polygonPoints,
       markerList: [
         {
           type: 'peopleOverLay',
@@ -75,6 +86,10 @@ export default {
   methods: {
     mapReady(map, BMap) {
       this.map = map
+
+      setTimeout(_ => {
+        this.$refs['cubeMap'].getBetterViewByOverlays()
+      }, 2000)
     },
     markerClick(e, t, m) {
       console.log(e, t, m)

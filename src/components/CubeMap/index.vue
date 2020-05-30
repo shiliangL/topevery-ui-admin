@@ -35,6 +35,26 @@
           </template>
         </template>
       </template>
+
+      <template>
+        <template v-for="(polygon,index) in polygonList">
+          <template v-show="item.show ? item.show : true">
+            <bm-polygon
+              :key="index+polygon"
+              :path="polygon"
+              stroke-color="blue"
+              :editing="false"
+              :fill-color="styleOptions.fillColor"
+              :fill-opacity="styleOptions.fillOpacity"
+              :stroke-opacity="styleOptions.strokeOpacity"
+              :stroke-style="styleOptions.strokeStyle"
+              :stroke-weight="styleOptions.strokeWeight"
+              @dblclick="dblclickPolygon"
+              @rightclick="rightclick"
+            />
+          </template>
+        </template>
+      </template>
     </template>
 
     <!-- 地图控件 绘图工具-->
@@ -167,9 +187,9 @@ export default {
       drawType: null,
       map: null,
       styleOptions: {
-        strokeColor: 'red', // 边线颜色。
+        strokeColor: 'blue', // 边线颜色。
         fillColor: '#3689F3', // 填充颜色。当参数为空时，圆形将没有填充效果。
-        strokeWeight: 1, // 边线的宽度，以像素为单位。
+        strokeWeight: 2, // 边线的宽度，以像素为单位。
         strokeOpacity: 0.5, // 边线透明度，取值范围0 - 1。
         fillOpacity: 0.4, // 填充的透明度，取值范围0 - 1。
         strokeStyle: 'dashed' // 边线的样式，solid dashed。
@@ -234,6 +254,15 @@ export default {
     overlaycomplete(e) {
       this.drawType = e.drawingMode
       e.overlay.__overLayoutKey__ = e.drawingMode
+      // e.overlay && e.overlay.enableEditing()
+    },
+    dblclickPolygon(e) {
+      console.log(e)
+      e.target.editing ? e.target.disableEditing() : e.target.enableEditing()
+      e.target.editing = !e.target.editing
+    },
+    rightclick(e) {
+      console.log('rightclick')
     },
     // 选择绘图方式
     draw(type) {
@@ -301,17 +330,15 @@ export default {
         for (const item of pointsList) {
           if (item.__overLayoutKey__ !== 'marker') {
             if (item.Sn) item.Sn.map(k => pointArray.push(k))
+            if (item.Tn) item.Tn.map(k => pointArray.push(k))
           } else {
             if (item.point) pointArray.push(item.point)
           }
         }
-        // console.log(pointsList)
         // console.log(pointArray)
-
         // eslint-disable-next-line no-undef
         const b = pointArray.map((item) => new BMap.Point(item.lng, item.lat)) || []
         this.map.setViewport(b)
-
         this.getAllPoints()
       }
     },
