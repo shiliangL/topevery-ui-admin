@@ -53,6 +53,7 @@
     "path-to-regexp": "2.4.0",
     "screenfull": "4.2.0",
     "topevery-element-ui": "0.0.29",
+    "v-click-outside": "^3.0.1",
     "vue": "2.6.10",
     "vue-baidu-map-topevery": "0.0.3",
     "vue-router": "3.0.2",

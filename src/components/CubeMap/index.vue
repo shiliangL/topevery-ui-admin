@@ -7,7 +7,15 @@
     @ready="mapReady"
   >
     <!-- 省市区边界 -->
-    <bm-boundary v-if="showBoundary" :disable-mass-clear="true" :name="centerName" :stroke-weight="2" fill-color="" stroke-color="red" @loaded="boundaryLoaded" />
+    <bm-boundary
+      v-if="showBoundary"
+      :disable-mass-clear="true"
+      :name="centerName"
+      :stroke-weight="2"
+      fill-color=""
+      stroke-color="red"
+      @loaded="boundaryLoaded"
+    />
 
     <!-- 地图控件 轨迹回放-->
     <MapGpsTracePlay v-if="showMapGpsTracePlay" />
@@ -51,18 +59,39 @@
               :stroke-weight="styleOptions.strokeWeight"
               @dblclick="dblclickPolygon"
               @rightclick="rightclick"
+              @lineupdate="polygonChange"
             />
           </template>
         </template>
       </template>
     </template>
 
+    <!-- 自定义鼠标右键菜单 -->
+
+    <transition name="el-zoom-in-top">
+      <ul
+        v-if="visible"
+        v-clickOutside="clickOutside"
+        :style="{left:left+'px',top:top+'px'}"
+        class="contextmenu"
+      >
+        <li
+          v-if="drawType!=='Marker'"
+          @click.stop="handlerContextmenu(1)"
+        > 编辑 </li>
+        <li @click.stop="handlerContextmenu(0)"> 删除 </li>
+      </ul>
+    </transition>
+
     <!-- 地图控件 绘图工具-->
     <bm-control
       :anchor="anchor"
       @ready="controlReady"
     >
-      <div v-if="map" class="tools">
+      <div
+        v-if="map"
+        class="tools"
+      >
         <el-link
           :underline="false"
           type="primary"
@@ -132,12 +161,20 @@
 // BMAP_ANCHOR_BOTTOM_LEFT	控件将定位到地图的左下角
 // BMAP_ANCHOR_BOTTOM_RIGHT	控件将定位到地图的右下角
 
+// 做个标识试试  tage
+// if (item.Sn) item.Sn.map(k => pointArray.push(k)) - 多边形
+// if (item.Tn) item.Tn.map(k => pointArray.push(k))
+
 import MapGpsTracePlay from './mapGpsTracePlay'
+import vClickOutside from 'v-click-outside'
 
 export default {
   name: 'CubeMap',
   components: {
     MapGpsTracePlay
+  },
+  directives: {
+    clickOutside: vClickOutside.directive
   },
   props: {
     centerName: {
@@ -176,14 +213,18 @@ export default {
     },
     lineList: {
       type: Array,
-      default: () => [{ type: 'layer', overlays: [], labels: [], show: true, showLabels: false }]
+      default: () => []
     },
     polygonList: {
-      type: Array, default: () => [{ type: 'layer', overlays: [], labels: [], show: true, showLabels: false }]
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
+      visible: false,
+      top: 0,
+      left: 0,
       drawType: null,
       map: null,
       styleOptions: {
@@ -246,23 +287,89 @@ export default {
       })
       // eslint-disable-next-line no-undef
       this.drawingManager && this.drawingManager.addEventListener('overlaycomplete', this.overlaycomplete)
-
-      setTimeout(() => {
-        // this.initDrawLoadData()
-      }, 200)
     },
     overlaycomplete(e) {
+      console.log('绘制完成')
       this.drawType = e.drawingMode
       e.overlay.__overLayoutKey__ = e.drawingMode
+      const overlay = e.overlay
+      console.log(overlay)
+      if (e.drawingMode === 'polygon') {
+        const polygonList = JSON.parse(JSON.stringify(this.polygonList))
+        const newPolygon = overlay.getPath() || []
+        if (newPolygon.length) {
+          const list = []
+          newPolygon.forEach((item) => { list.push(item) })
+          polygonList.push(list)
+          this.map && this.map.removeOverlay(overlay)
+          this.$emit('update:polygonList', polygonList)
+        }
+        overlay.addEventListener('rightclick', (e) => this.rightclick(e))
+      }
       // e.overlay && e.overlay.enableEditing()
     },
     dblclickPolygon(e) {
-      console.log(e)
       e.target.editing ? e.target.disableEditing() : e.target.enableEditing()
       e.target.editing = !e.target.editing
     },
     rightclick(e) {
-      console.log('rightclick')
+      e.domEvent.preventDefault()
+      if (!e.target) return
+      this.rightClickOverlay = e.target
+      this.left = e.clientX
+      this.top = e.clientY
+      this.map && this.map.disableDragging()
+      this.map && this.map.disableScrollWheelZoom()
+      this.visible = true
+    },
+    clickOutside() {
+      this.visible = false
+      this.map && this.map.enableDragging()
+      this.map && this.map.enableScrollWheelZoom()
+      this.rightClickOverlay = null
+    },
+    handlerContextmenu(type) {
+      const { rightClickOverlay } = this
+      if (!rightClickOverlay) return
+      switch (type) {
+        case 0:
+          // 删除
+          this.clickOutside()
+          this.map && this.map.removeOverlay(rightClickOverlay)
+          this.updatePointsByType()
+          return
+        case 1:
+          // 编辑
+          this.clickOutside()
+          this.map && rightClickOverlay.enableEditing()
+          return
+        default:
+          return
+      }
+    },
+    updatePointsByType() {
+      // "marker"  "polygon" "polyline"
+      if (this.map) {
+        const polygon = []
+        const points = this.map.getOverlays() || []
+        // const marker = []
+        // const polyline = []
+        // const pointArray = []
+        const pointsList = points.filter(item => item.__overLayoutKey__)
+        for (const item of pointsList) {
+          if (item.__overLayoutKey__ === 'polygon') {
+            if (item.getPath() && item.getPath().length) {
+              polygon.push(item.getPath())
+            }
+          }
+        }
+        this.$emit('update:polygonList', polygon)
+        // this.$emit('update:lineList', polygon)
+        // this.$emit('update:markerList', polygon)
+      }
+    },
+    polygonChange(e) {
+      this.updatePointsByType()
     },
     // 选择绘图方式
     draw(type) {
@@ -339,30 +446,7 @@ export default {
         // eslint-disable-next-line no-undef
         const b = pointArray.map((item) => new BMap.Point(item.lng, item.lat)) || []
         this.map.setViewport(b)
-        this.getAllPoints()
       }
-    },
-    // 获取地图所有覆盖物坐标
-    getAllPoints() {
-      // "marker"  "polygon" "polyline"
-      const markers = []
-      const polygons = []
-      const polylines = []
-      const pointsOnMap = this.map.getOverlays() || []
-      if (pointsOnMap.length) {
-        for (const item of pointsOnMap) {
-          if (item.__overLayoutKey__ === 'marker') {
-            markers.push(item.point)
-          } else if (item.__overLayoutKey__ === 'polygon') {
-            polygons.push(item.Sn)
-          } else if (item.__overLayoutKey__ === 'polyline') {
-            polylines.push(item.Sn)
-          }
-        }
-      }
-      console.log(markers)
-      console.log(polygons)
-      console.log(polylines)
     }
   }
 }
@@ -381,5 +465,30 @@ export default {
 .el-link {
   display: inline-block;
   margin: 0 10px;
+}
+
+.contextmenu {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  list-style-type: none;
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #333;
+  z-index: 99999999;
+  box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
+  position: fixed;
+  width: 80px;
+  text-align: left;
+  li {
+    margin: 0;
+    padding: 7px 16px;
+    cursor: pointer;
+    &:hover {
+      background: #eee;
+      color: #1d6fff;
+    }
+  }
 }
 </style>

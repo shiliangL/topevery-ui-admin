@@ -1,18 +1,18 @@
 <!--
  * @Author: shiliangL
  * @Date: 2020-05-27 09:43:51
- * @LastEditTime: 2020-05-30 16:56:34
+ * @LastEditTime: 2020-05-30 19:01:13
  * @LastEditors: Do not edit
  * @Description:
  * @FilePath: /topevery-ui-admin/src/views/dashboard/index.vue
 -->
 <template>
   <div class="dashboard page">
-
+    <el-button type="primary" @click="clickTe">测试</el-button>
     <CubeMap
       ref="cubeMap"
       class="cubeMap"
-      :polygon-list="polygon"
+      :polygon-list.sync="polygon"
       @mapReady="mapReady"
       @markerClick="markerClick"
     >
@@ -49,7 +49,7 @@ export default {
     return {
       autosize: '',
       currentRole: 'adminDashboard',
-      polygon: polygonPoints,
+      polygon: [[{ 'lng': 113.82349433387273, 'lat': 22.69045644757896 }, { 'lng': 113.82509331767996, 'lat': 22.68779728122396 }, { 'lng': 113.82615331818138, 'lat': 22.688180737905242 }, { 'lng': 113.82707857285635, 'lat': 22.688572529468072 }, { 'lng': 113.82706958980125, 'lat': 22.690631500585894 }]],
       markerList: [
         {
           type: 'peopleOverLay',
@@ -77,6 +77,14 @@ export default {
       'roles'
     ])
   },
+  watch: {
+    polygon: {
+      deep: true,
+      handler(list) {
+        console.log(list, 'update')
+      }
+    }
+  },
   created() {
     // console.log(process.env, 'dev')
     if (!this.roles.includes('admin')) {
@@ -86,10 +94,11 @@ export default {
   methods: {
     mapReady(map, BMap) {
       this.map = map
-
-      setTimeout(_ => {
-        this.$refs['cubeMap'].getBetterViewByOverlays()
-      }, 2000)
+      setTimeout(_ => { this.$refs['cubeMap'].getBetterViewByOverlays() }, 2000)
+    },
+    clickTe() {
+      console.log('x')
+      console.log(JSON.stringify(this.polygon))
     },
     markerClick(e, t, m) {
       console.log(e, t, m)
