@@ -55,7 +55,7 @@
     "topevery-element-ui": "0.0.29",
     "v-click-outside": "^3.0.1",
     "vue": "2.6.10",
-    "vue-baidu-map-topevery": "0.0.3",
+    "vue-baidu-map-topevery": "0.0.5",
     "vue-router": "3.0.2",
     "vue-splitpane": "1.0.4",
     "vuex": "3.1.0"
