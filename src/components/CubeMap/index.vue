@@ -1,7 +1,6 @@
 <template>
   <baidu-map
-    class="baidu-map"
-    style="width: 100%; height:100%;"
+    class="cube-baidu-map"
     :center="centerName"
     :map-click="mapClick"
     @ready="mapReady"
@@ -17,57 +16,65 @@
       @loaded="boundaryLoaded"
     />
 
-    <!-- 地图控件 轨迹回放-->
-    <MapGpsTracePlay v-if="showMapGpsTracePlay" />
-
     <!-- 覆盖物 -->
     <template v-if="map">
-      <template v-for="item in markerList">
-        <template v-show="item.show">
-          <template v-for="marker in item.overlays">
-            <bm-marker
-              :key="marker.id + 'marker'"
-              :clicking="true"
-              title="title - marker"
-              :dragging="marker.dragging"
-              :position="{lng: marker.lng, lat: marker.lat}"
-              @click="markerClick($event,item.type,marker)"
-            />
-            <bm-label
-              :key="marker.id + 'label'"
-              :position="{lng: marker.lng, lat: marker.lat}"
-              :content="marker.name"
-              :label-style="{color: 'red', fontSize : '14px'}"
-              :offset="{width: 20, height: -26}"
-            />
-          </template>
-        </template>
-      </template>
 
-      <template>
-        <template v-for="(polygon,index) in polygonList">
-          <template v-show="item.show ? item.show : true">
-            <bm-polygon
-              :key="index+'polygon'"
-              :path="polygon"
-              stroke-color="blue"
-              :editing="false"
-              :fill-color="styleOptions.fillColor"
-              :fill-opacity="styleOptions.fillOpacity"
-              :stroke-opacity="styleOptions.strokeOpacity"
-              :stroke-style="styleOptions.strokeStyle"
-              :stroke-weight="styleOptions.strokeWeight"
-              @rightclick="rightclick"
-              @lineupdate="polygonUpdate"
-            />
-            <!-- @dblclick="dblclickPolygon" -->
-          </template>
+      <bm-control key="line_list_bm_marker_template">
+        <template v-for="(polygon,index) in markerList">
+          <bm-marker
+            :key="index+'line_list_bm_marker'"
+            :position="polygon"
+            stroke-color="blue"
+            :editing="false"
+            :fill-color="styleOptions.fillColor"
+            :fill-opacity="styleOptions.fillOpacity"
+            :stroke-opacity="styleOptions.strokeOpacity"
+            :stroke-style="styleOptions.strokeStyle"
+            :stroke-weight="styleOptions.strokeWeight"
+            @rightclick="rightclick"
+            @lineupdate="polygonUpdate"
+          />
         </template>
-      </template>
+      </bm-control>
+
+      <bm-control key="line_list_bm_polyline_template">
+        <template v-for="(polygon,index) in lineList">
+          <bm-polyline
+            :key="index+'line_list_bm_polyline'"
+            :path="polygon"
+            stroke-color="blue"
+            :editing="false"
+            :fill-color="styleOptions.fillColor"
+            :fill-opacity="styleOptions.fillOpacity"
+            :stroke-opacity="styleOptions.strokeOpacity"
+            :stroke-style="styleOptions.strokeStyle"
+            :stroke-weight="styleOptions.strokeWeight"
+            @rightclick="rightclick"
+            @lineupdate="polygonUpdate"
+          />
+        </template>
+      </bm-control>
+
+      <bm-control key="line_list_bm_polygon_template">
+        <template v-for="(polygon,index) in polygonList">
+          <bm-polygon
+            :key="index+'line_list_bm_polygon'"
+            :path="polygon"
+            stroke-color="blue"
+            :editing="false"
+            :fill-color="styleOptions.fillColor"
+            :fill-opacity="styleOptions.fillOpacity"
+            :stroke-opacity="styleOptions.strokeOpacity"
+            :stroke-style="styleOptions.strokeStyle"
+            :stroke-weight="styleOptions.strokeWeight"
+            @rightclick="rightclick"
+            @lineupdate="polygonUpdate"
+          />
+        </template>
+      </bm-control>
     </template>
 
     <!-- 自定义鼠标右键菜单 -->
-
     <transition name="el-zoom-in-top">
       <ul
         v-if="visible"
@@ -93,16 +100,16 @@
         class="tools"
       >
         <el-link
-          v-show="false"
+          v-show="isEdiing"
           style="border-top: 1px solid red;"
           :underline="false"
-          @click.native="draw(6)"
-        > {{ isEditorIng ?'编辑中...(点击完成)':'' }}</el-link>
+          @click.stop="draw(6)"
+        > {{ isEdiing ?'编辑中...(点击保存)':'' }}</el-link>
 
         <el-link
           :underline="false"
           type="primary"
-          @click.native="draw(1)"
+          @click.stop="draw(1)"
         >
           <i class="el-icon-full-screen" /> 视角
         </el-link>
@@ -110,32 +117,32 @@
         <template v-if="!previewMode">
           <el-link
             :underline="false"
+            type="warning"
+            @click.stop="draw(0)"
+          > <i class="el-icon-thumb" /> 停止绘制</el-link>
+          <el-link
+            :underline="false"
             type="primary"
-            @click.native="draw(0)"
-          >停止绘制</el-link>
-          <el-link
-            :underline="false"
-            type="success"
-            @click.native="draw(2)"
+            @click.stop="draw(2)"
           >
-            <i class="el-icon-location-information" /> 标点 </el-link>
+            <i class="el-icon-s-flag" /> 标点 </el-link>
           <el-link
             :underline="false"
-            type="success"
-            @click.native="draw(3)"
+            type="primary"
+            @click.stop="draw(3)"
           >
             <i class="el-icon-crop" /> 画面 </el-link>
           <el-link
             :underline="false"
-            type="success"
-            @click.native="draw(4)"
+            type="primary"
+            @click.stop="draw(4)"
           >
             <i class="el-icon-minus" /> 画线
           </el-link>
           <el-link
             :underline="false"
             type="danger"
-            @click.native="draw(5)"
+            @click.stop="draw(5)"
           >
             清空所有绘制</el-link>
           <el-tooltip
@@ -147,7 +154,9 @@
               <br>
               2、清空所有绘制会清空地图上所有图形
               <br>
-              2、画面、画线操作时,双击完成绘制
+              3、画面、画线操作时,双击完成绘制
+              <br>
+              4、请及时保存地图保证数据同步
             </div>
             <el-link
               :underline="false"
@@ -170,17 +179,10 @@
 // BMAP_ANCHOR_TOP_RIGHT	控件将定位到地图的右上角
 // BMAP_ANCHOR_BOTTOM_LEFT	控件将定位到地图的左下角
 // BMAP_ANCHOR_BOTTOM_RIGHT	控件将定位到地图的右下角
-
-// 做个标识试试  tage
-
-import MapGpsTracePlay from './mapGpsTracePlay'
 import vClickOutside from 'v-click-outside'
 
 export default {
   name: 'CubeMap',
-  components: {
-    MapGpsTracePlay
-  },
   directives: {
     clickOutside: vClickOutside.directive
   },
@@ -197,22 +199,13 @@ export default {
       type: Boolean,
       default: () => true
     },
-    showMapGpsTracePlay: {
-      type: Boolean,
-      default: () => true
-    },
     mapClick: {
       type: Boolean,
       default: () => false
     },
     previewMode: {
       type: Boolean,
-      default: () => true
-    },
-    // 点击Marker的时候是否自动导航到最优可视区域
-    isSetViewToMarkerClick: {
-      type: Boolean,
-      default: () => true
+      default: () => false
     },
     markerList: {
       type: Array,
@@ -226,7 +219,10 @@ export default {
       type: Array,
       default: () => []
     },
-    isEditorIng: {
+    // 地图状态 如果是编辑中
+    // 则引导用户确认编辑
+    // 确认编辑之后将同步地图坐标
+    isEdiing: {
       type: Boolean,
       default: () => false
     }
@@ -239,6 +235,7 @@ export default {
       drawType: null,
       map: null,
       canEmitChange: false,
+      addNewOverLayout: [], // 暂时存放新增覆盖物。
       styleOptions: {
         strokeColor: 'blue', // 边线颜色。
         fillColor: '#3689F3', // 填充颜色。当参数为空时，圆形将没有填充效果。
@@ -312,55 +309,21 @@ export default {
     // 绘制覆盖物完成
     overlaycomplete(e) {
       if (!e.drawingMode) return
+      this.$emit('update:isEdiing', true)
       // "marker"  "polygon" "polyline"
       const overlay = e.overlay
       const polygonType = ['polygon', 'polyline']
-      this.drawType = e.drawingMode
       e.overlay.__overLayoutKey__ = e.drawingMode
-      this.closeEditorIng()
       if (polygonType.includes(e.drawingMode)) {
-        const polygonList = this.polygonList // 面
-        const lineList = this.lineList // 线
-        const newPolygon = overlay.getPath() || []
-        if (newPolygon.length) {
-          const list = []
-          newPolygon.forEach((item) => { list.push(item) })
-          if (e.drawingMode === 'polygon') {
-            polygonList.push(list)
-            this.map && this.map.removeOverlay(overlay)
-            this.$emit('update:polygonList', polygonList)
-          }
-          if (e.drawingMode === 'polyline') {
-            lineList.push(list)
-            // this.map && this.map.removeOverlay(overlay)
-            this.$emit('update:lineList', polygonList)
-          }
-        }
+        this.addNewOverLayout.push(overlay)
+        // 其实这里只是用了 数据 图层已经删除了。
         overlay && overlay.addEventListener('rightclick', (e) => this.rightclick(e))
         overlay && overlay.addEventListener('lineupdate', (e) => this.polygonUpdate(e))
-        overlay && overlay.addEventListener('dblclick', (e) => this.dblclickPolygon(e))
-        // 诡异的bug 绘制完成开启编辑 视图渲染错误
+        setTimeout(_ => { overlay && overlay.enableEditing() }, 200)
       }
-
       if (e.drawingMode === 'marker') {
-        console.log(overlay, 'marker')
-        const markerList = this.markerList
-        markerList.push(overlay.point)
-        this.$emit('update:markerList', markerList)
-
+        this.addNewOverLayout.push(overlay)
         overlay && overlay.addEventListener('rightclick', (e) => this.rightclick(e))
-      }
-    },
-    // 双击覆盖物
-    dblclickPolygon(e) {
-      if (e.target.editing) {
-        e.target.disableEditing()
-        this.$emit('update:isEditorIng', false)
-        e.target.editing = !e.target.editing
-      } else {
-        e.target.enableEditing()
-        this.$emit('update:isEditorIng', true)
-        e.target.editing = !e.target.editing
       }
     },
     // 鼠标右键覆盖物
@@ -383,7 +346,7 @@ export default {
       this.map && this.map.enableScrollWheelZoom()
       this.rightClickOverlay = null
     },
-    // 右键菜单操作 - 开启编辑唯一入口 - 鼠标右键
+    // 右键菜单操作 - 开启编辑唯一入口 - 鼠标右键 + 新增覆盖物
     handlerContextmenu(type) {
       const { rightClickOverlay } = this
       if (!rightClickOverlay) return
@@ -392,24 +355,29 @@ export default {
           // 删除
           this.clickOutside()
           this.map && this.map.removeOverlay(rightClickOverlay)
-          this.updatePointsByType()
           return
         case 1:
           // 编辑
           this.clickOutside()
           this.canEmitChange = true
-          this.$emit('update:isEditorIng', true)
           this.map && rightClickOverlay.enableEditing()
+          this.$emit('update:isEdiing', true)
           return
         default:
           return
+      }
+    },
+    // 同步数据的时候删除新增图层
+    removeAddNewOverlay() {
+      const { addNewOverLayout } = this
+      if (addNewOverLayout.length) {
+        addNewOverLayout.map((overlay) => this.map && this.map.removeOverlay(overlay))
       }
     },
     // 获取地图覆盖物坐标更新坐标信息
     updatePointsByType() {
       // "marker"  "polygon" "polyline"
       if (!this.map) return
-      const polyType = ['polygon', 'polyline']
       const polygon = []
       const polyline = []
       const marker = []
@@ -417,9 +385,14 @@ export default {
       // const pointArray = []
       const pointsList = points.filter(item => item.__overLayoutKey__)
       for (const item of pointsList) {
-        if (polyType.includes(item.__overLayoutKey__)) {
+        if (item.__overLayoutKey__ === 'polygon') {
           if (item.getPath() && item.getPath().length) {
             polygon.push(item.getPath())
+          }
+        }
+        if (item.__overLayoutKey__ === 'polyline') {
+          if (item.getPath() && item.getPath().length) {
+            polyline.push(item.getPath())
           }
         }
         if (item.__overLayoutKey__ === 'marker') {
@@ -428,16 +401,19 @@ export default {
           }
         }
       }
+      this.removeAddNewOverlay()
       this.$emit('update:polygonList', polygon)
       this.$emit('update:lineList', polyline)
       this.$emit('update:markerList', marker)
+      this.$emit('change')
     },
     // 绘制多边形
     polygonUpdate(e) {
+      // console.log(e.target.getEditing(), 'getEditing')
       if (this.canEmitChange) {
         console.log('绘制多边形')
-        this.updatePointsByType()
-        this.$emit('change')
+        // this.updatePointsByType()
+        // this.$emit('change')
       }
     },
     // 关闭所有编辑状态
@@ -446,11 +422,9 @@ export default {
         const points = this.map.getOverlays() || []
         const pointsList = points.filter(item => item.__overLayoutKey__)
         for (const item of pointsList) {
-          if (item.__overLayoutKey__ !== 'marker') {
-            item.disableEditing()
-          }
+          if (item.__overLayoutKey__ !== 'marker') item.disableEditing()
         }
-        this.$emit('update:isEditorIng', false)
+        this.$emit('update:isEdiing', false)
       }
     },
     // 选择绘图方式
@@ -485,18 +459,21 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            this.closeEditorIng()
             this.drawingManager && this.drawingManager.close()
             this.map && this.map.clearOverlays()
             this.$emit('update:polygonList', [])
             this.$emit('update:lineList', [])
             this.$emit('update:markerList', [])
             this.$emit('clear')
+            this.$emit('change')
             setTimeout(_ => {
               this.getBetterViewByOverlays()
             }, 200)
           }).catch(() => { })
           break
         case 6:
+          // 完成编辑同步数据
           this.closeEditorIng()
           this.updatePointsByType()
           break
@@ -505,18 +482,12 @@ export default {
           break
       }
     },
-    markerClick(e, type, marker) {
-      if (this.isSetViewToMarkerClick) {
-        const { lat, lng } = marker
-        this.map && this.map.setViewport([new BMap.Point(lng, lat)])
-      }
-      this.$emit('markerClick', e, type, marker)
-    },
     getBetterViewByOverlays() {
       if (this.map) {
         // console.log(this.map.getOverlays()) 获取地图覆盖物
         const points = this.map.getOverlays() || []
         const pointArray = []
+        console.log(points, 'pointArray-pointArray')
         const pointsList = points.filter(item => item.__overLayoutKey__)
         for (const item of pointsList) {
           if (item.__overLayoutKey__ !== 'marker') {
@@ -530,15 +501,26 @@ export default {
         const list = b.length ? b : this.boundaryLoadedpoints || []
         this.map.setViewport(list)
       }
+    },
+    deepMerge(target, merged) {
+      for (const key in merged) {
+        target[key] = target[key] && target[key].toString() === '[object Object]' ? this.deepMerge(target[key], merged[key]) : target[key] = merged[key]
+      }
+      return target
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.cube-baidu-map {
+  width: 100%;
+  height: 100%;
+}
 .tools {
-  height: 40px;
-  line-height: 40px;
+  user-select: none;
+  height: 36px;
+  line-height: 36px;
   background: #ffffff;
   margin: 10px;
   padding: 0 10px;
