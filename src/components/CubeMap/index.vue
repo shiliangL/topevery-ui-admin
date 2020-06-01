@@ -410,6 +410,7 @@ export default {
     },
     // 绘制多边形
     polygonUpdate(e) {
+      // 这里暂时 没有用 实时同步双向数据的话 视图问题会更新 不利于编辑的操作
       // console.log(e.target.getEditing(), 'getEditing')
       if (this.canEmitChange) {
         console.log('绘制多边形')
@@ -483,12 +484,12 @@ export default {
           break
       }
     },
+    // 最佳可视视角
     getBetterViewByOverlays() {
       if (this.map) {
         // console.log(this.map.getOverlays()) 获取地图覆盖物
         const points = this.map.getOverlays() || []
         const pointArray = []
-        console.log(points, 'pointArray-pointArray')
         const pointsList = points.filter(item => item.__overLayoutKey__)
         for (const item of pointsList) {
           if (item.__overLayoutKey__ !== 'marker') {
@@ -503,6 +504,7 @@ export default {
         this.map.setViewport(list)
       }
     },
+    // 对象深度合并
     deepMerge(target, merged) {
       for (const key in merged) {
         target[key] = target[key] && target[key].toString() === '[object Object]' ? this.deepMerge(target[key], merged[key]) : target[key] = merged[key]
@@ -558,7 +560,7 @@ export default {
   }
 }
 
-.rotate90{
+.rotate90 {
   transform: rotate(90deg);
 }
 </style>

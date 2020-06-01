@@ -1,7 +1,7 @@
 <!--
  * @Author: shiliangL
  * @Date: 2020-05-27 09:43:51
- * @LastEditTime: 2020-05-31 17:58:40
+ * @LastEditTime: 2020-06-01 08:52:13
  * @LastEditors: Do not edit
  * @Description:
  * @FilePath: /topevery-ui-admin/src/views/dashboard/index.vue
@@ -9,9 +9,10 @@
 <template>
   <div class="dashboard page">
     <el-button
+      class="test-btn"
       type="primary"
       @click="clickTe"
-    >测试</el-button>
+    >测试打印输入坐标</el-button>
     <CubeMap
       ref="cubeMap"
       :preview-mode="previewMode"
@@ -22,22 +23,12 @@
       :marker-list.sync="markerList"
       @mapReady="mapReady"
     />
-    <component
-      :is="currentRole"
-      v-if="false"
-    />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import CubeMap from '@/components/CubeMap'
-// import points from './json/area.json'
-import { polygonPoints } from './json/polygonPoints.json'
-
-console.log(polygonPoints)
-
-// import { on } from '@/utils/tools'
 
 export default {
   name: 'Dashboard',
@@ -83,10 +74,10 @@ export default {
       setTimeout(_ => { this.$refs['cubeMap'].getBetterViewByOverlays() }, 2000)
     },
     clickTe() {
-      console.log('x')
       this.previewMode = !this.previewMode
-      console.log(JSON.stringify(this.polygon))
+      console.log(JSON.stringify(this.polygon), 'polygon')
       console.log(JSON.stringify(this.lineList), 'lineList')
+      console.log(JSON.stringify(this.markerList), 'markerList')
     }
   }
 }
@@ -94,7 +85,14 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard {
+  position: relative;
   width: 100%;
   height: calc(100vh - 94px);
+  .test-btn {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    z-index:1000;
+  }
 }
 </style>
