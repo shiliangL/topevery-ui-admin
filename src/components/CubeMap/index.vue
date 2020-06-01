@@ -137,7 +137,7 @@
             type="primary"
             @click.stop="draw(4)"
           >
-            <i class="el-icon-minus" /> 画线
+            <i class="el-icon-minus rotate90" /> 画线
           </el-link>
           <el-link
             :underline="false"
@@ -346,7 +346,7 @@ export default {
       this.map && this.map.enableScrollWheelZoom()
       this.rightClickOverlay = null
     },
-    // 右键菜单操作 - 开启编辑唯一入口 - 鼠标右键 + 新增覆盖物
+    // 右键菜单操作 - 开启编辑唯一入口 - 鼠标右键 + 新增覆盖物 + 删除
     handlerContextmenu(type) {
       const { rightClickOverlay } = this
       if (!rightClickOverlay) return
@@ -355,6 +355,7 @@ export default {
           // 删除
           this.clickOutside()
           this.map && this.map.removeOverlay(rightClickOverlay)
+          this.$emit('update:isEdiing', true)
           return
         case 1:
           // 编辑
@@ -529,7 +530,7 @@ export default {
 
 .el-link {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0 4px;
 }
 
 .contextmenu {
@@ -555,5 +556,9 @@ export default {
       color: #1d6fff;
     }
   }
+}
+
+.rotate90{
+  transform: rotate(90deg);
 }
 </style>
