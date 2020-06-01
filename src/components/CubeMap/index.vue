@@ -83,7 +83,7 @@
         class="contextmenu"
       >
         <li
-          v-if="drawType!=='marker'"
+          v-if="drawType!=='marker' && !editing"
           @click.stop="handlerContextmenu(1)"
         > 编辑 </li>
         <li @click.stop="handlerContextmenu(0)"> 删除 </li>
@@ -232,8 +232,9 @@ export default {
       visible: false,
       top: 0,
       left: 0,
-      drawType: null,
       map: null,
+      drawType: null,
+      editing: false, // 是否是编辑状态
       canEmitChange: false,
       addNewOverLayout: [], // 暂时存放新增覆盖物。
       styleOptions: {
@@ -335,6 +336,7 @@ export default {
       this.left = e.clientX
       this.top = e.clientY
       this.drawType = e.target.__overLayoutKey__
+      this.editing = e.target.getEditing()
       this.map && this.map.disableDragging()
       this.map && this.map.disableScrollWheelZoom()
       this.visible = true
@@ -342,6 +344,7 @@ export default {
     // 点击右键菜单外部
     clickOutside() {
       this.visible = false
+      this.editing = false
       this.map && this.map.enableDragging()
       this.map && this.map.enableScrollWheelZoom()
       this.rightClickOverlay = null
