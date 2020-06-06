@@ -195,6 +195,35 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/multipane',
+    meta: {
+      title: 'layout面板',
+      icon: 'lock'
+    },
+    component: Layout,
+    children: [
+      {
+        path: 'multipane1',
+        component: () => import('@/views/multipane/multipane-1'),
+        name: 'multipane-1',
+        meta: { title: 'multipane1', icon: 'theme' }
+      },
+      {
+        path: 'multipane2',
+        component: () => import('@/views/multipane/multipane-2'),
+        name: 'multipane-2',
+        meta: { title: 'multipane2', icon: 'theme' }
+      },
+      {
+        path: 'multipane3',
+        component: () => import('@/views/multipane/multipane-3'),
+        name: 'multipane-3',
+        meta: { title: 'multipane3', icon: 'theme' }
+      }
+    ]
+  },
+
+  {
     path: 'external-link',
     component: Layout,
     hidden: true,
