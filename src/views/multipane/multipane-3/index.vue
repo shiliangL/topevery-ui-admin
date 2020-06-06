@@ -1,7 +1,7 @@
 <!--
  * @Author: shiliangL
  * @Date: 2020-06-06 15:39:29
- * @LastEditTime: 2020-06-06 17:36:08
+ * @LastEditTime: 2020-06-06 18:56:42
  * @LastEditors: Do not edit
  * @Description:
  * @FilePath: /topevery-ui-admin/src/views/multipane/multipane-3/index.vue
@@ -34,14 +34,16 @@
         class="pane multipane-page"
         :style="{ flexGrow: 1 }"
       >
-        <CubeMap
-          ref="cubeMap"
-          center-name="深圳市"
-          :is-ediing.sync="isEdiing"
-          :polygon-list.sync="polygon"
-          :line-list.sync="lineList"
-          :marker-list.sync="markerList"
-        />
+        <div>
+          <CubeMap
+            ref="cubeMap"
+            center-name="深圳市"
+            :is-ediing.sync="isEdiing"
+            :polygon-list.sync="polygon"
+            :line-list.sync="lineList"
+            :marker-list.sync="markerList"
+          />
+        </div>
       </div>
     </multipane>
   </div>
@@ -103,7 +105,7 @@ export default {
 
 .custom-resizer {
   width: 100%;
-  height: 400px;
+  height: calc(100vh - 110px);
 }
 
 .custom-resizer > .pane {

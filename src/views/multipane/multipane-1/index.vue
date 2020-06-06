@@ -1,7 +1,7 @@
 <!--
  * @Author: shiliangL
  * @Date: 2020-06-06 15:38:49
- * @LastEditTime: 2020-06-06 17:32:03
+ * @LastEditTime: 2020-06-06 18:49:46
  * @LastEditors: Do not edit
  * @Description:
  * @FilePath: /topevery-ui-admin/src/views/multipane/multipane-1/index.vue
@@ -9,7 +9,7 @@
 <template>
   <div class="page">
     <multipane class="vertical-panes" layout="vertical">
-      <div class="pane" :style="{ width: '25%' }">
+      <div class="pane" :style="{ minWidth: '100px', width: '25%' }">
         <div>
           <h6 class="title is-6">Pane 1</h6>
           <p class="subtitle is-6">Fixed width.</p>
