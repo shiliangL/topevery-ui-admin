@@ -43,7 +43,7 @@
     "url": "https://github.com/shiliangL/topevery-ui-admin/issues"
   },
   "dependencies": {
-    "axios": "0.18.1",
+    "axios": "1.6.0",
     "dayjs": "^1.8.27",
     "echarts": "4.2.1",
     "file-saver": "2.0.1",
